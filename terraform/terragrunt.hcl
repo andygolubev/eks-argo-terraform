@@ -18,11 +18,11 @@ generate "providers" {
   if_exists = "overwrite"
   contents  = <<EOP
 terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 1.13"
   required_providers {
-    aws        = { source = "hashicorp/aws",        version = ">= 5.0" }
-    helm       = { source = "hashicorp/helm",       version = ">= 2.11" }
-    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.23" }
+    aws        = { source = "hashicorp/aws",        version = ">= 6.13" }
+    helm       = { source = "hashicorp/helm",       version = ">= 3.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = ">= 2.38" }
   }
 }
 
