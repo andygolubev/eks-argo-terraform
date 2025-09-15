@@ -6,10 +6,10 @@ locals {
 remote_state {
   backend = "s3"
   config = {
-    bucket    = get_env("TF_STATE_BUCKET", "eks-argo-terraform-tf-state-bucket")
-    key       = "${path_relative_to_include()}/terraform.tfstate"
-    region    = get_env("TF_STATE_REGION", "us-east-1")
-    encrypt   = true
+    bucket       = get_env("TF_STATE_BUCKET", "REPLACE_ME_STATE_BUCKET")
+    key          = "${path_relative_to_include()}/terraform.tfstate"
+    region       = get_env("TF_STATE_REGION", "us-east-1")
+    encrypt      = true
     use_lockfile = true
   }
 }
@@ -32,3 +32,5 @@ provider "aws" {
 }
 EOP
 }
+
+
