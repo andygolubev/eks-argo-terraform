@@ -9,9 +9,9 @@ set -euo pipefail
 #   TF_STATE_REGION overrides AWS_REGION for bucket location if set
 #   AWS_PROFILE can be used to select a credentials profile
 
-AWS_REGION_ENV_VALUE="${AWS_REGION:us-east-1}"
-TF_STATE_REGION_ENV_VALUE="${TF_STATE_REGION:us-east-1}"
-BUCKET_NAME="${TF_STATE_BUCKET:eks-argo-terraform-tf-state-bucket}"
+AWS_REGION_ENV_VALUE="${AWS_REGION:-us-east-1}"
+TF_STATE_REGION_ENV_VALUE="${TF_STATE_REGION:-us-east-1}"
+BUCKET_NAME="${TF_STATE_BUCKET:-eks-argo-terraform-tf-state-bucket}"
 
 if [[ -z "${AWS_REGION_ENV_VALUE}" && -z "${TF_STATE_REGION_ENV_VALUE}" ]]; then
   echo "ERROR: AWS_REGION or TF_STATE_REGION must be set" >&2
@@ -29,7 +29,7 @@ echo "Using region: ${REGION}"
 echo "Bucket name: ${BUCKET_NAME}"
 
 # Determine the correct LocationConstraint payload. us-east-1 is special and must omit LocationConstraint.
-CREATE_BUCKET_ARGS=("s3api" "create-bucket" "--bucket" "${BUCKET_NAME}")
+CREATE_BUCKET_ARGS=("s3api" "create-bucket" "--bucket" "${BUCKET_NAME}" "--region" "${REGION}")
 if [[ "${REGION}" != "us-east-1" ]]; then
   CREATE_BUCKET_ARGS+=("--create-bucket-configuration" "LocationConstraint=${REGION}")
 fi
@@ -55,20 +55,6 @@ aws s3api put-public-access-block \
   --bucket "${BUCKET_NAME}" \
   --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
 
-echo "Creating DynamoDB table for state locking (optional)..."
-LOCK_TABLE_NAME="${TF_STATE_LOCK_TABLE:-terraform-state-locks}"
-if aws dynamodb describe-table --table-name "${LOCK_TABLE_NAME}" >/dev/null 2>&1; then
-  echo "Lock table already exists: ${LOCK_TABLE_NAME}"
-else
-  aws dynamodb create-table \
-    --table-name "${LOCK_TABLE_NAME}" \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST \
-    --region "${REGION}"
-  echo "Lock table created: ${LOCK_TABLE_NAME}"
-fi
-
 cat <<EOF
 
 Done.
@@ -77,8 +63,8 @@ Export these for terragrunt if you haven't already:
   export TF_STATE_BUCKET=${BUCKET_NAME}
   export TF_STATE_REGION=${REGION}
 
-If you want to use DynamoDB locking in Terraform backend config, set:
-  dynamodb_table = "${LOCK_TABLE_NAME}"
+If using Terraform 1.10+ S3 backend with native locking, set in backend config:
+  use_lockfile = true
 
 EOF
 

@@ -10,6 +10,7 @@ remote_state {
     key       = "${path_relative_to_include()}/terraform.tfstate"
     region    = get_env("TF_STATE_REGION", "us-east-1")
     encrypt   = true
+    use_lockfile = true
   }
 }
 
