@@ -18,7 +18,7 @@ inputs = {
   cluster_name       = "eks"
   vpc_id             = dependency.vpc.outputs.vpc_id
   private_subnet_ids = dependency.vpc.outputs.private_subnet_ids
-  tags               = local.common_tags
+  tags               = include.common.locals.common_tags
 }
 
 

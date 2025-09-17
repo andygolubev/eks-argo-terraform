@@ -12,7 +12,7 @@ include "common" {
 
 inputs = {
   name = "vpc"
-  tags = local.common_tags
+  tags = include.common.locals.common_tags
 }
 
 
