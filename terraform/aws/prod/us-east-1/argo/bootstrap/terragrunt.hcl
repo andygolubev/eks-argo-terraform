@@ -8,6 +8,14 @@ include "root" {
 
 dependency "eks" {
   config_path = "../../eks/cluster"
+
+  # Allow planning before EKS is applied by providing mock outputs
+  mock_outputs = {
+    cluster_name      = "eks"
+    cluster_endpoint  = "https://mock-eks-endpoint"
+    oidc_provider_arn = "arn:aws:iam::111111111111:oidc-provider/mock"
+  }
+  mock_outputs_allowed_terraform_commands = ["init", "plan"]
 }
 
 inputs = {
