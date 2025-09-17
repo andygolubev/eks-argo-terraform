@@ -33,4 +33,15 @@ provider "aws" {
 EOP
 }
 
+# Ensure a backend block exists so Terragrunt remote_state settings take effect
+generate "backend" {
+  path      = "backend.tf"
+  if_exists = "overwrite"
+  contents  = <<EOB
+terraform {
+  backend "s3" {}
+}
+EOB
+}
+
 
