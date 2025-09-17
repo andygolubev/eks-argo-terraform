@@ -8,6 +8,7 @@ include "root" {
 
 include "common" {
   path = find_in_parent_folders("_common.hcl")
+  expose = true
 }
 
 dependency "vpc" {
