@@ -6,10 +6,10 @@ locals {
 remote_state {
   backend = "s3"
   config = {
-    bucket    = get_env("TF_STATE_BUCKET", "eks-argo-terraform-tf-state-bucket")
-    key       = "${path_relative_to_include()}/terraform.tfstate"
-    region    = get_env("TF_STATE_REGION", "us-east-1")
-    encrypt   = true
+    bucket       = "eks-argo-terraform-tf-state-bucket"
+    key          = "${path_relative_to_include()}/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
     use_lockfile = true
   }
 }
@@ -28,7 +28,20 @@ terraform {
 }
 
 provider "aws" {
-  region = "${get_env("AWS_REGION", "us-east-1")}"
+  region = us-east-1"
 }
 EOP
 }
+
+# Ensure a backend block exists so Terragrunt remote_state settings take effect
+generate "backend" {
+  path      = "backend.tf"
+  if_exists = "overwrite"
+  contents  = <<EOB
+terraform {
+  backend "s3" {}
+}
+EOB
+}
+
+
