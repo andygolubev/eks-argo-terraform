@@ -19,8 +19,8 @@ dependency "vpc" {
 }
 
 inputs = {
-  cluster_name       = "eks"
+  cluster_name       = var.cluster_name
   vpc_id             = dependency.vpc.outputs.vpc_id
   private_subnet_ids = dependency.vpc.outputs.private_subnet_ids
-  tags               = include.common.locals.common_tags
+  tags               = var.tags
 }

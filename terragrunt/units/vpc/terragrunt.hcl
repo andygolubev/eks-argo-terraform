@@ -4,6 +4,7 @@ unit {
 }
 
 inputs = {
-  name = "vpc"
-  tags = include.common.locals.common_tags
+  name       = var.vpc_name
+  cidr_block = var.vpc_cidr_block
+  tags       = var.tags
 }
