@@ -1,5 +1,5 @@
 
 
-terragrunt run-all init --backend-bootstrap
+terragrunt init --all --backend-bootstrap
 
 
